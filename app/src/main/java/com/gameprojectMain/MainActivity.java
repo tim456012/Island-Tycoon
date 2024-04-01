@@ -1,14 +1,16 @@
 package com.gameprojectMain;
 
 import android.app.Activity;
+import android.graphics.Insets;
 import android.os.Bundle;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Window;
+import android.view.WindowInsets;
 import android.view.WindowManager;
+import android.view.WindowMetrics;
 
 import com.gameproject.framework.Audio;
 import com.gameproject.framework.FileIO;
@@ -40,18 +42,22 @@ public abstract class MainActivity extends Activity implements Game{
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        // Pixel Prefect
         boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         int frameBufferWidth = isLandscape ? 1920 : 1080;
         int frameBufferHeight = isLandscape ? 1080 : 1920;
         Bitmap frameBuffer = Bitmap.createBitmap(frameBufferWidth, frameBufferHeight, Config.ARGB_8888);
 
-        //Display display = getWindowManager().getDefaultDisplay();
-        //Point size = new Point();
-        //display.getSize(size);
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = displayMetrics.widthPixels;
-        int height = displayMetrics.heightPixels;
+        WindowMetrics windowMetrics = getWindowManager().getCurrentWindowMetrics();
+        Insets insets = windowMetrics.getWindowInsets().getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
+        int width = windowMetrics.getBounds().width() - insets.left - insets.right;
+        int height = windowMetrics.getBounds().height() - insets.top - insets.bottom;
+
+        // Old version
+        // DisplayMetrics displayMetrics = new DisplayMetrics();
+        // getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        //  int width = displayMetrics.widthPixels;
+        //  int height = displayMetrics.heightPixels;
 
         Log.d("Width Value", "Width = " + width);
         Log.d("Height Value", "Height = " + height);
